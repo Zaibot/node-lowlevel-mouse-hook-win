@@ -4,25 +4,28 @@ if (process.platform !== 'win32') return;
 
 const hookMouse = require('bindings')('ll_mouse_hooks');
 
-let runID = 1;
+const getMode = (modes) => {
+  return modes.split(',').reduce((state, cur) => {
+    if (cur === 'move') {
+      return state | 0x01;
+    } else if (cur === 'up') {
+      return state | 0x02;
+    } else if (cur === 'down') {
+      return state | 0x04;
+    } else {
+      throw Error(`expects 'move' and/or 'up' and/or 'down' splitted by commas`);
+    }
+  }, 0);
+}
 
 module.exports = {
-  listen: (cb) => {
-    const cID = runID;
-    runID += 1;
-    hookMouse.stop();
-
-    setTimeout(() => {
-      if (runID - 1 !== cID) return;
-      hookMouse.run((event) => {
-        const details = event.split('::');
-        if (details.length === 1) {
-          cb(details[0]);
-        } else {
-          cb(details[0], parseInt(details[1], 10), parseInt(details[2], 10));
-        }
-      });
-    }, 0);
+  on: (modes, fn) => {
+    hookMouse.run(getMode(modes), (eventData) => {
+      const parts = eventData.split('::');
+      fn(parts[0], parts[1], parts[2]);
+    });
   },
-  stop: () => hookMouse.stop(),
+  stop: () => {
+    hookMouse.stop();
+  }
 };
