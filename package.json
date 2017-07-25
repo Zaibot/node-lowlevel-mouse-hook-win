@@ -1,6 +1,6 @@
 {
   "name": "@zaibot/ll-mouse-hook-win",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Listen to global mouse events on Windows",
   "main": "ll_mouse_hooks.js",
   "gypfile": true,
