@@ -13,5 +13,6 @@
   ],
   "scripts": {
     "start": "npm build . && node ll_mouse_hooks.js"
-  }
+  },
+  "typings": "typings.d.ts"
 }
